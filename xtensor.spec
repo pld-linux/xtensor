@@ -3,6 +3,7 @@
 %bcond_without	apidocs		# API documentation
 %bcond_without	openmp		# parallelization using OpenMP
 %bcond_with	tbb		# parallelization using TBB (disables OpenMP)
+%bcond_with	tests		# building tests and benchmarks
 %bcond_with	xsimd		# SIMD acceleration
 #
 %if %{with tbb}
@@ -11,21 +12,24 @@
 Summary:	Multi-dimensional arrays with broadcasting and lazy computing
 Summary(pl.UTF-8):	Wielowymiarowe tablice z rozpraszaniem i leniwym obliczaniem
 Name:		xtensor
-Version:	0.24.6
+Version:	0.25.0
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/xtensor-stack/xtensor/tags
 Source0:	https://github.com/xtensor-stack/xtensor/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	368a1172b78ebc81ee91366dd9f525b5
+# Source0-md5:	3432b1981b12c443201e14f9ee14d1ad
 URL:		https://xtensor.readthedocs.io/
 BuildRequires:	cmake >= 3.1
+%{?with_tests:BuildRequires:	doctest}
+%{?with_tests:BuildRequires:	google-benchmark-devel}
 %{?with_openmp:BuildRequires:	libgomp-devel}
 BuildRequires:	libstdc++-devel >= 6:5
 BuildRequires:	nlohmann-json-devel >= 3.1.1
 BuildRequires:	rpmbuild(macros) >= 1.605
 %{?with_tbb:BuildRequires:	tbb-devel}
-%{?with_xsimd:BuildRequires:	xsimd-devel = 10.0.0}
+%{?with_xsimd:BuildRequires:	xsimd-devel >= 11.0.0}
+%{?with_xsimd:BuildRequires:	xsimd-devel < 12}
 BuildRequires:	xtl-devel >= 0.7.5
 %if %{with apidocs}
 BuildRequires:	doxygen
@@ -94,7 +98,9 @@ cd build
 # fake LIBDIR so we can create noarch package
 %cmake .. \
 	-DCMAKE_INSTALL_LIBDIR=%{_datadir} \
-	-DDOWNLOAD_BENCHMARK=OFF \
+	%{?with_tests:-DBUILD_TESTS=ON} \
+	%{?with_tests:-DBUILD_BENCHMARK=ON} \
+	-DDOWNLOAD_GBENCHMARK=OFF \
 	%{?with_openmp:-DXTENSOR_USE_OPENMP=ON} \
 	%{?with_tbb:-DXTENSOR_USE_TBB=ON} \
 	%{?with_xsimd:-DXTENSOR_USE_XSIMD=ON}
