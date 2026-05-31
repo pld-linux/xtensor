@@ -12,13 +12,13 @@
 Summary:	Multi-dimensional arrays with broadcasting and lazy computing
 Summary(pl.UTF-8):	Wielowymiarowe tablice z rozpraszaniem i leniwym obliczaniem
 Name:		xtensor
-Version:	0.26.0
+Version:	0.27.1
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/xtensor-stack/xtensor/tags
 Source0:	https://github.com/xtensor-stack/xtensor/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	3a042d82a53776d49eb8c82fb5885fc5
+# Source0-md5:	ef143422b31b94dd0f5b95b69388cd48
 URL:		https://xtensor.readthedocs.io/
 BuildRequires:	cmake >= 3.29
 %{?with_tests:BuildRequires:	doctest}
@@ -114,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+%{__mv} $RPM_BUILD_ROOT%{_prefix}/etc $RPM_BUILD_ROOT
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -124,6 +126,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/xtensor
 %{_npkgconfigdir}/xtensor.pc
 %{_datadir}/cmake/xtensor
+%{_datadir}/xeus-cpp
+%{_sysconfdir}/xeus-cpp
 
 %if %{with apidocs}
 %files apidocs
